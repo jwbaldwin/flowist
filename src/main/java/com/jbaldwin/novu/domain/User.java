@@ -1,7 +1,7 @@
 package com.jbaldwin.novu.domain;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +10,7 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -19,4 +19,8 @@ public class User {
     private String firstName;
     private String lastName;
 
+    public User(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }
