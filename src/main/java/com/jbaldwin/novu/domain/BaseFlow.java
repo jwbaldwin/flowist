@@ -6,6 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.UUID;
 
 @Builder
 @Data
@@ -13,10 +18,15 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseFlow {
-    private String id;
-    private String type;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    private String activity;
     private String title;
-    private String body;
-    private String extraInfo;
+    private String content;
+    private ArrayList<String> tags;
+    private String created;
     private FlowStatus flowStatus;
 }

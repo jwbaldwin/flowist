@@ -5,8 +5,9 @@ import com.jbaldwin.novu.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
-@RestController(value = "/user")
+@RestController
 public class UserController {
 
     private final UserService userService;
@@ -15,23 +16,23 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/user")
     public Iterable<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping(value = "/{id}")
-    public Optional<User> getUserById(@PathVariable String id) {
+    @GetMapping("/user/{id}")
+    public Optional<User> getUserById(@PathVariable UUID id) {
         return userService.getUserById(id);
     }
 
-    @PostMapping
+    @PostMapping("/user")
     public User saveUser() {
         return userService.saveUser("james", "baldwin");
     }
 
-    @DeleteMapping(value = "/{id}")
-    public void deleteUser(@PathVariable String id) {
+    @DeleteMapping("/user/{id}")
+    public void deleteUser(@PathVariable UUID id) {
         userService.deleteUserById(id);
     }
 
