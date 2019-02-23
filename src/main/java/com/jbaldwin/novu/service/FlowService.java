@@ -21,13 +21,13 @@ public class FlowService {
     }
 
     public Optional<BaseFlow> getFlowById(UUID id) {
-        log.info("Finding flow with ID: {}", id);
+        log.info("Fetching flow with ID: {}", id);
 
         return flowRepository.findById(id);
     }
 
     public Iterable<BaseFlow> getAllFlows() {
-        log.info("Finding all flows");
+        log.info("Fetching all flows");
 
         return flowRepository.findAll();
     }

@@ -2,12 +2,14 @@ package com.jbaldwin.novu.web.controller;
 
 import com.jbaldwin.novu.domain.BaseFlow;
 import com.jbaldwin.novu.service.FlowService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 public class FlowController {
 
