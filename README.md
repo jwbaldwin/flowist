@@ -1,10 +1,9 @@
-
-[![Open Source Love](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
 # flowist.io
 
 An application focused on *keeping developers in flow* by reminding you what you were working on, allowing for collaboration without the cost.
 
 Visit the site at: [flowist.io](https://flowist.io)
+Frontend repo can be found [here](https://github.com/jwbaldwin/flowist-frontend)
 
 ## Getting Started
 
