@@ -40,4 +40,8 @@ public class FlowService {
 
         return flowRepository.save(flow);
     }
+
+    public void deleteFlowById(UUID id) {
+        flowRepository.deleteById(id);
+    }
 }

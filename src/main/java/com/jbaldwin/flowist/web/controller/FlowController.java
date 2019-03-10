@@ -34,4 +34,9 @@ public class FlowController {
         return flowService.saveFlow(flow);
     }
 
+    @DeleteMapping(value = "/flow/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public void deleteFlowById(@PathVariable UUID id) {
+        flowService.deleteFlowById(id);
+    }
+
 }
