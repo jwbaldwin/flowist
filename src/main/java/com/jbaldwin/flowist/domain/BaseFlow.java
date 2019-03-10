@@ -1,6 +1,7 @@
-package com.jbaldwin.novu.domain;
+package com.jbaldwin.flowist.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,23 +9,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.ArrayList;
 import java.util.UUID;
 
+@Builder
 @Data
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@NoArgsConstructor
+public class BaseFlow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    private String firstName;
-    private String lastName;
-
-    public User(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
+    private String activity;
+    private String title;
+    private String content;
+    private ArrayList<String> tags;
+    private String created;
+    private FlowStatus flowStatus;
 }

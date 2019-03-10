@@ -1,7 +1,7 @@
-package com.jbaldwin.novu.service;
+package com.jbaldwin.flowist.service;
 
-import com.jbaldwin.novu.domain.User;
-import com.jbaldwin.novu.repository.UserRepository;
+import com.jbaldwin.flowist.domain.User;
+import com.jbaldwin.flowist.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

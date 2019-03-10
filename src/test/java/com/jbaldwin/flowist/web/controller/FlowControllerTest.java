@@ -1,4 +1,4 @@
-package com.jbaldwin.novu.web.controller;
+package com.jbaldwin.flowist.web.controller;
 
 import org.junit.Before;
 import org.junit.Test;

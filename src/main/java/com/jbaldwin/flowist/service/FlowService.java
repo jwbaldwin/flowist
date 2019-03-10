@@ -1,8 +1,8 @@
-package com.jbaldwin.novu.service;
+package com.jbaldwin.flowist.service;
 
-import com.jbaldwin.novu.domain.BaseFlow;
-import com.jbaldwin.novu.domain.FlowStatus;
-import com.jbaldwin.novu.repository.FlowRepository;
+import com.jbaldwin.flowist.domain.BaseFlow;
+import com.jbaldwin.flowist.domain.FlowStatus;
+import com.jbaldwin.flowist.repository.FlowRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.jbaldwin.novu.service;
+package com.jbaldwin.flowist.service;
 
 import org.junit.Test;
 

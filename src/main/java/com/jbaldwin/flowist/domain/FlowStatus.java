@@ -1,4 +1,4 @@
-package com.jbaldwin.novu.domain;
+package com.jbaldwin.flowist.domain;
 
 public enum FlowStatus {
     ACTIVE, PAUSED, STOPPED

@@ -1,6 +1,6 @@
-package com.jbaldwin.novu.repository;
+package com.jbaldwin.flowist.repository;
 
-import com.jbaldwin.novu.domain.BaseFlow;
+import com.jbaldwin.flowist.domain.BaseFlow;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

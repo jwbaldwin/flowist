@@ -1,7 +1,7 @@
-package com.jbaldwin.novu.web.controller;
+package com.jbaldwin.flowist.web.controller;
 
-import com.jbaldwin.novu.domain.BaseFlow;
-import com.jbaldwin.novu.service.FlowService;
+import com.jbaldwin.flowist.domain.BaseFlow;
+import com.jbaldwin.flowist.service.FlowService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

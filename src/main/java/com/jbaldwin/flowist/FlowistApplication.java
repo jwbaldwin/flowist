@@ -1,14 +1,14 @@
-package com.jbaldwin.novu;
+package com.jbaldwin.flowist;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@EnableJpaRepositories("com.jbaldwin.novu.repository")
+@EnableJpaRepositories("com.jbaldwin.flowist.repository")
 @SpringBootApplication
-public class NovuApplication {
+public class FlowistApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(NovuApplication.class, args);
+		SpringApplication.run(FlowistApplication.class, args);
 	}
 }

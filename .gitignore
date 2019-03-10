@@ -4,6 +4,7 @@
 
 ### USER ###
 .DS_Store
+flowist-frontend/*
 
 ### STS ###
 .apt_generated

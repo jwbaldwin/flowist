@@ -1,7 +1,7 @@
-package com.jbaldwin.novu.web.controller;
+package com.jbaldwin.flowist.web.controller;
 
-import com.jbaldwin.novu.domain.User;
-import com.jbaldwin.novu.service.UserService;
+import com.jbaldwin.flowist.domain.User;
+import com.jbaldwin.flowist.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.jbaldwin.novu.web.controller;
+package com.jbaldwin.flowist.web.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
