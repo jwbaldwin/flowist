@@ -42,6 +42,8 @@ public class FlowService {
     }
 
     public void deleteFlowById(UUID id) {
+        log.info("Deleteing flow with ID: {}", id);
+
         flowRepository.deleteById(id);
     }
 }

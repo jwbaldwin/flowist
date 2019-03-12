@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
+@RequestMapping(value="flow")
 public class FlowController {
 
     private final FlowService flowService;
@@ -19,22 +20,22 @@ public class FlowController {
         this.flowService = flowService;
     }
 
-    @GetMapping(value = "/flow/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = "{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public Optional<BaseFlow> getFlowById(@PathVariable UUID id) {
         return flowService.getFlowById(id);
     }
 
-    @GetMapping(value = "/flow", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public Iterable<BaseFlow> getAllFlows() {
         return flowService.getAllFlows();
     }
 
-    @PostMapping(value = "/flow", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public BaseFlow saveFlow(@RequestBody BaseFlow flow) {
         return flowService.saveFlow(flow);
     }
 
-    @DeleteMapping(value = "/flow/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @DeleteMapping(value = "{id}")
     public void deleteFlowById(@PathVariable UUID id) {
         flowService.deleteFlowById(id);
     }
