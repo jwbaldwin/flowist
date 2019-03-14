@@ -24,11 +24,11 @@ public class UserService {
         return userRepository.save(new User(firstName, lastName));
     }
 
-    public Optional<User> getUserById(UUID id) {
+    public Optional<User> getUserById(long id) {
         return userRepository.findById(id);
     }
 
-    public void deleteUserById(UUID id) {
+    public void deleteUserById(long id) {
         userRepository.deleteById(id);
     }
 }

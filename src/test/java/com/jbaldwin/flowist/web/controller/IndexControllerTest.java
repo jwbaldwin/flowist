@@ -23,7 +23,7 @@ public class IndexControllerTest {
 
     @Test
     public void getToIndex_shouldReturnDefaultMessage() throws Exception {
-        this.mockMvc.perform(get("/"))
+        this.mockMvc.perform(get("/test"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("This is the api!")));
     }

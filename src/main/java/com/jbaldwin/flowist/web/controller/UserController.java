@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public Optional<User> getUserById(@PathVariable UUID id) {
+    public Optional<User> getUserById(@PathVariable long id) {
         return userService.getUserById(id);
     }
 
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{id}")
-    public void deleteUser(@PathVariable UUID id) {
+    public void deleteUser(@PathVariable long id) {
         userService.deleteUserById(id);
     }
 
