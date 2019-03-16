@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +24,7 @@ public class FlowController {
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<Flow> getFlow(@RequestParam UUID id){
+        log.debug("Processing GET request with id: {}", id);
         return ResponseEntity.ok(flowService.getFlowById(id));
     }
 
@@ -35,11 +35,13 @@ public class FlowController {
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<Flow> saveFlow(@Valid @RequestBody Flow flow){
+        log.debug("Processing POST request");
         return ResponseEntity.ok(flowService.saveFlow(flow));
     }
 
     @PutMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<Flow> updateFlow(@Valid @RequestBody Flow flow, @RequestParam UUID id) {
+        log.info("Processing PUT request with id: {}", id);
         return ResponseEntity.ok(flowService.updateFlow(flow, id));
     }
 
