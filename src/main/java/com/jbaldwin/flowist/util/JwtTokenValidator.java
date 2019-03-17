@@ -1,17 +1,22 @@
 package com.jbaldwin.flowist.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.jwk.Jwk;
+import com.auth0.jwk.JwkException;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.UrlJwkProvider;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.jbaldwin.flowist.domain.JwtUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.URL;
+import java.security.interfaces.RSAPublicKey;
 
 @Component
 public class JwtTokenValidator {
@@ -28,38 +33,34 @@ public class JwtTokenValidator {
      */
     public JwtUser parseToken(String token) {
         JwtUser user = null;
-
         try {
             Claims body = Jwts.parser()
-                    .setSigningKey(getPem())
+                    .setSigningKey(getPem(token))
                     .parseClaimsJws(token)
                     .getBody();
 
             user = new JwtUser();
-            user.setUsername(body.getSubject());
-            user.setId(Long.parseLong((String) body.get("userId")));
+
+            user.setId((String) body.get("cognito:username"));
+            user.setUsername((String) body.get("email"));
             user.setRole((String) body.get("role"));
 
-        } catch (JwtException | IOException e) {
+        } catch (JwtException | JwkException | IOException e) {
             // Simply print the exception and null will be returned
             e.printStackTrace();
         }
         return user;
     }
 
-    public String getPem() throws IOException {
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-        String response = restTemplate.getForObject(url, String.class);
-//        JsonNode root = mapper.readTree(response.getBody());
-//        JsonNode name = root.path("name");
-        System.out.println("response = " + response);
-        return response.toString();
-//        return RestTemplate
-//        return requestify.request(jwkUrl, { method: 'get', dataType: 'json'})
-//    .then(res => res.getBody()['keys'].shift())
-//    .then(jwk => jwkToPem(jwk))
-//        ;
+    public RSAPublicKey getPem(String token) throws IOException, JwkException {
+        DecodedJWT jwt = JWT.decode(token);
+        JwkProvider provider = new UrlJwkProvider(new URL(url));
+        Jwk jwk = provider.get(jwt.getKeyId());
+        RSAPublicKey publicKey = (RSAPublicKey) jwk.getPublicKey();
+        Algorithm algorithm = Algorithm.RSA256(publicKey,null);
+
+        algorithm.verify(jwt);
+        return publicKey;
     }
 }
 

@@ -8,12 +8,12 @@ import java.util.Collection;
 
 public class AuthenticatedUser implements UserDetails {
 
-    private final Long id;
+    private final String id;
     private final String username;
     private final String token;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public AuthenticatedUser(Long id, String username, String token, Collection<? extends GrantedAuthority> authorities) {
+    public AuthenticatedUser(String id, String username, String token, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.token = token;
@@ -21,7 +21,7 @@ public class AuthenticatedUser implements UserDetails {
     }
 
     @JsonIgnore
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
