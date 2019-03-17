@@ -6,3 +6,12 @@ server:
 spring:
   main:
     allow-bean-definition-overriding: true
+
+jwt:
+  header: Authorization
+
+cognito:
+  region: us-east-1
+  userPoolId: us-east-1_ovXfMEfAs
+  url: https://cognito-idp.${cognito.region}.amazonaws.com/${cognito.userPoolId}/.well-known/jwks.json
+
