@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,8 +35,9 @@ public class FlowController {
     }
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public ResponseEntity<Flow> saveFlow(@Valid @RequestBody Flow flow){
+    public ResponseEntity<Flow> saveFlow(@Valid @RequestBody Flow flow, Principal principal){
         log.debug("Processing POST request");
+        flow.setOwner(principal.getName());
         return ResponseEntity.ok(flowService.saveFlow(flow));
     }
 

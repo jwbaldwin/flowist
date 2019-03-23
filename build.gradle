@@ -24,17 +24,25 @@ repositories {
 }
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-    implementation('org.springframework.boot:spring-boot-starter-data-rest')
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("io.jsonwebtoken:jjwt:0.9.0")
-    implementation("com.auth0:java-jwt:3.8.0")
-    implementation("com.auth0:jwks-rsa:0.7.0")
+    //    Spring
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-data:5.1.4.RELEASE'
 
+    //    JWT and Utilities
+    implementation 'io.jsonwebtoken:jjwt:0.9.0'
+    implementation 'com.auth0:java-jwt:3.8.0'
+    implementation 'com.auth0:jwks-rsa:0.7.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    //    Database
     implementation 'com.h2database:h2'
     implementation 'mysql:mysql-connector-java'
     implementation 'org.projectlombok:lombok'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.security:spring-security-test')
+
 }

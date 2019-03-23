@@ -22,6 +22,8 @@ public class Flow {
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
+    private String owner;
+
     private String activity;
     private String title;
     private String content;

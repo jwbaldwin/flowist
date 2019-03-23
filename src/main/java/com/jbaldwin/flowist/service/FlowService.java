@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -24,7 +23,6 @@ public class FlowService {
 
     public List<Flow> getAllFlows() {
         log.info("Fetching all flows");
-
         return flowRepository.findAll();
     }
 

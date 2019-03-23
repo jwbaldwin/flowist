@@ -41,8 +41,8 @@ public class JwtTokenValidator {
 
             user = new JwtUser();
 
-            user.setId((String) body.get("cognito:username"));
-            user.setUsername((String) body.get("email"));
+            user.setId((String) body.get("email"));
+            user.setUsername((String) body.get("cognito:username"));
             user.setRole((String) body.get("role"));
 
         } catch (JwtException | JwkException | IOException e) {
