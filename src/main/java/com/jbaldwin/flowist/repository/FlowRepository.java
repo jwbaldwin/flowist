@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.stereotype.Repository;
 
@@ -24,8 +25,8 @@ public interface FlowRepository extends JpaRepository<Flow, UUID> {
     Optional<Flow> findById(UUID id);
 
     @Override
-    @PreFilter("#entity.userId == principal.username")
-    <S extends Flow> S save(S flow);
+    @PreAuthorize("#flow.owner == principal.username")
+    Flow save(Flow flow);
 
     @Override
     void deleteById(UUID id);
