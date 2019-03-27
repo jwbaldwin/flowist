@@ -12,6 +12,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'distribution'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -45,4 +46,20 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('org.springframework.security:spring-security-test')
 
+}
+
+distributions {
+    main {
+        contents {
+            into('lib') {
+                from jar
+            }
+            contents {
+                from {
+                    '.ebextensions'
+                }
+                into '/'
+            }
+        }
+    }
 }
