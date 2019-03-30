@@ -1,0 +1,1 @@
+web: java -jar flowist-@applicationVersion@.jar -Xmx2048m -Xms256m

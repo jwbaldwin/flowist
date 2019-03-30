@@ -20,8 +20,7 @@ public interface FlowRepository extends JpaRepository<Flow, UUID> {
     @Query("select f from Flow f where f.owner = ?#{ principal?.username }")
     List<Flow> findAll();
 
-    @Override
-    @PostAuthorize("returnObject.owner == principal.username")
+    @PostAuthorize("returnObject.get().owner == principal.username")
     Optional<Flow> findById(UUID id);
 
     @Override

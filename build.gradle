@@ -1,6 +1,8 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 buildscript {
     ext {
-        springBootVersion = '2.1.1.RELEASE'
+        springBootVersion = '2.1.2.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -11,7 +13,6 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'distribution'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
@@ -51,15 +52,8 @@ dependencies {
 distributions {
     main {
         contents {
-            into('lib') {
-                from jar
-            }
-            contents {
-                from {
-                    '.ebextensions'
-                }
-                into '/'
-            }
+            filter(ReplaceTokens, tokens: [applicationVersion: version])
+            from jar
         }
     }
 }
