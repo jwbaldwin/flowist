@@ -68,7 +68,7 @@ public class FlowControllerTest {
 
     @Test
     public void getAllFlows_willReturnNoFlows_whenNoFlowsExist() throws Exception {
-        this.mockMvc.perform(get("/flows/all"))
+        this.mockMvc.perform(get("/flows"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json("[]"));
@@ -78,7 +78,7 @@ public class FlowControllerTest {
     public void getFlowById_willReturnFlowWithCorrectId() throws Exception {
         Mockito.when(flowService.getFlowById(this.id)).thenReturn(this.mockFlow);
 
-        MvcResult result = this.mockMvc.perform(get("/flows?id=" + id)
+        MvcResult result = this.mockMvc.perform(get("/flows/" + this.id)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -104,25 +104,25 @@ public class FlowControllerTest {
         assertThat(result.getResponse().getContentAsString(), equalTo(this.gson.toJson(this.mockFlow)));
     }
 
-//    @Test
-//    public void updateFlow_willUpdateFlowById() throws Exception {
-//        this.mockFlow.setFlowStatus(FlowStatus.COMPLETED);
-//        Mockito.when(flowService.updateFlow(this.mockFlow, this.id))
-//                .thenReturn(this.mockFlow);
-//
-//        MvcResult result = this.mockMvc.perform(put("/flows")
-//                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .content(this.gson.toJson(this.mockFlow)))
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        assertThat(result.getResponse().getContentAsString(), equalTo(this.gson.toJson(this.mockFlow)));
-//    }
+   @Test
+   public void updateFlow_willUpdateFlowById() throws Exception {
+       this.mockFlow.setFlowStatus(FlowStatus.COMPLETED);
+       Mockito.when(flowService.updateFlow(this.mockFlow, this.id))
+               .thenReturn(this.mockFlow);
+
+       MvcResult result = this.mockMvc.perform(put("/flows/"+ this.id)
+               .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
+               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+               .content(this.gson.toJson(this.mockFlow)))
+               .andExpect(status().isOk())
+               .andReturn();
+
+       assertThat(result.getResponse().getContentAsString(), equalTo(this.gson.toJson(this.mockFlow)));
+   }
 
     @Test
     public void deleteFlow_willDeleteFlowWithId() throws Exception {
-        this.mockMvc.perform(delete("/flows?id=" + id)
+        this.mockMvc.perform(delete("/flows/" + id)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk());
     }

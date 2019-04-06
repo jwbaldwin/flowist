@@ -24,12 +24,6 @@ public class FlowController {
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public ResponseEntity<Flow> getFlow(@RequestParam UUID id){
-        log.debug("Processing GET request with id: {}", id);
-        return ResponseEntity.ok(flowService.getFlowById(id));
-    }
-
-    @GetMapping(value ="/all", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public List<Flow> getAllFlows() {
         return flowService.getAllFlows();
     }
@@ -41,14 +35,20 @@ public class FlowController {
         return ResponseEntity.ok(flowService.saveFlow(flow));
     }
 
-    @PutMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public ResponseEntity<Flow> updateFlow(@Valid @RequestBody Flow flow, @RequestParam UUID id) {
+    @GetMapping(value= "/{id}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<Flow> getFlow(@PathVariable UUID id){
+        log.debug("Processing GET request with id: {}", id);
+        return ResponseEntity.ok(flowService.getFlowById(id));
+    }
+
+    @PutMapping(value= "/{id}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<Flow> updateFlow(@Valid @RequestBody Flow flow, @PathVariable UUID id) {
         log.info("Processing PUT request with id: {}", id);
         return ResponseEntity.ok(flowService.updateFlow(flow, id));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteFlow(@RequestParam UUID id){
+    @DeleteMapping(value= "/{id}")
+    public ResponseEntity<?> deleteFlow(@PathVariable UUID id){
         flowService.deleteFlowById(id);
         return ResponseEntity.ok("Deleted entity with id: " + id);
     }
