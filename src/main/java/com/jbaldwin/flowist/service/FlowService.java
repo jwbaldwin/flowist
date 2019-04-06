@@ -35,7 +35,6 @@ public class FlowService {
 
     public Flow saveFlow(Flow flow) {
         flow.setFlowStatus(FlowStatus.ACTIVE);
-        flow.setCreated(Instant.now().toString());
 
         log.info("Saving new flow: {}", flow);
 
