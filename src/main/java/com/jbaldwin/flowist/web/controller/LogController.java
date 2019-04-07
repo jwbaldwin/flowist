@@ -1,59 +1,51 @@
 package com.jbaldwin.flowist.web.controller;
 
-import com.jbaldwin.flowist.domain.Flow;
-import com.jbaldwin.flowist.service.FlowService;
+import com.jbaldwin.flowist.domain.Log;
 import com.jbaldwin.flowist.service.LogService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/flows")
 public class LogController {
 
-        private final LogService logService;
+    private final LogService logService;
 
-        public LogController(LogService logService) {
-            this.logService = logService;
-        }
+    public LogController(LogService logService) {
+        this.logService = logService;
+    }
 
-        @GetMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-        public List<Flow> getAllFlows() {
-            return logService.getAllFlows();
-        }
+    @GetMapping("/flows/{flowId}/logs")
+    public List<Log> getAllLogsByFlowId(@PathVariable UUID flowId) {
+        return logService.findByFlowId(flowId);
+    }
 
-        @PostMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-        public ResponseEntity<Flow> saveFlow(@Valid @RequestBody Flow flow, Principal principal){
-            log.debug("Processing POST request for log");
-            flow.setOwner(principal.getName());
-            return ResponseEntity.ok(flowService.saveFlow(flow));
-        }
+    @PostMapping("/flows/{flowId}/logs")
+    public ResponseEntity<Log> saveLog(@PathVariable UUID flowId, @Valid @RequestBody Log log) {
+        LOG.debug("Processing log POST request");
+        return logService.saveLog(flowId, log);
+    }
 
-        @GetMapping(value= "/{id}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-        public ResponseEntity<Flow> getFlow(@PathVariable UUID id){
-            log.debug("Processing GET request with id: {}", id);
-            return ResponseEntity.ok(flowService.getFlowById(id));
-        }
+    @PutMapping("/flows/{flowId}/logs/{logId}")
+    public ResponseEntity<Log> updateLog(@PathVariable UUID flowId, @PathVariable UUID logId, @Valid @RequestBody Log log) {
+        LOG.info("Processing log PUT request with id: {}", logId);
+        return logService.updateLog(flowId, logId, log);
+    }
 
-        @PutMapping(value= "/{id}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-        public ResponseEntity<Flow> updateFlow(@Valid @RequestBody Flow flow, @PathVariable UUID id) {
-            log.info("Processing PUT request with id: {}", id);
-            return ResponseEntity.ok(flowService.updateFlow(flow, id));
-        }
-
-        @DeleteMapping(value= "/{id}")
-        public ResponseEntity<?> deleteFlow(@PathVariable UUID id){
-            flowService.deleteFlowById(id);
-            return ResponseEntity.ok("Deleted entity with id: " + id);
-        }
-
+    @DeleteMapping("/posts/{flowId}/logs/{logId}")
+    public ResponseEntity<Object> deleteLog(@PathVariable UUID flowId, @PathVariable UUID logId) {
+        LOG.info("Processing log DELETE with id: {}", logId);
+        return logService.deleteLog(flowId, logId);
     }
 
 }

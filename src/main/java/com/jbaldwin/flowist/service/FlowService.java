@@ -3,13 +3,12 @@ package com.jbaldwin.flowist.service;
 import com.jbaldwin.flowist.domain.Flow;
 import com.jbaldwin.flowist.domain.FlowStatus;
 import com.jbaldwin.flowist.repository.FlowRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityNotFoundException;
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -22,42 +21,42 @@ public class FlowService {
     }
 
     public List<Flow> getAllFlows() {
-        log.info("Fetching all flows");
+        LOG.info("Fetching all flows");
         return flowRepository.findAll();
     }
 
-    public Flow getFlowById(UUID id) {
-        log.info("Fetching flow with ID: {}", id);
+    public ResponseEntity<Flow> getFlowById(UUID id) {
+        LOG.info("Fetching flow with ID: {}", id);
 
-        return flowRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Flow not found with id: " + id.toString()));
+        return ResponseEntity.ok(flowRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Flow not found with id: " + id.toString())));
     }
 
-    public Flow saveFlow(Flow flow) {
+    public ResponseEntity<Flow> saveFlow(Flow flow) {
         flow.setFlowStatus(FlowStatus.ACTIVE);
 
-        log.info("Saving new flow: {}", flow);
-
-        return flowRepository.save(flow);
+        LOG.info("Saving new flow: {}", flow);
+        return ResponseEntity.ok(flowRepository.save(flow));
     }
 
-    public Flow updateFlow(Flow flow, UUID id) {
-        log.info("Updating flow with ID: {} \n and {}", flow.getId(), flow);
+    public ResponseEntity<Flow> updateFlow(Flow flow, UUID id) {
+        LOG.info("Updating flow with ID: {} \n and {}", flow.getId(), flow);
 
-       Flow updatedFlow = getFlowById(id);
-        updatedFlow.setActivity(flow.getActivity());
-        updatedFlow.setTitle(flow.getTitle());
-        updatedFlow.setContent(flow.getContent());
-        updatedFlow.setTags(flow.getTags());
-        updatedFlow.setFlowStatus(flow.getFlowStatus());
-
-        return flowRepository.save(updatedFlow);
+        return flowRepository.findById(id).map(storedFlow -> {
+            storedFlow.setActivity(flow.getActivity());
+            storedFlow.setTitle(flow.getTitle());
+            storedFlow.setContent(flow.getContent());
+            storedFlow.setTags(flow.getTags());
+            storedFlow.setFlowStatus(flow.getFlowStatus());
+            return ResponseEntity.ok(flowRepository.save(storedFlow));
+        }).orElseThrow(() -> new ResourceNotFoundException("Flow not found with id: " + id.toString()));
     }
 
-    public void deleteFlowById(UUID id) {
-        log.info("Deleting flow with ID: {}", id);
+    public ResponseEntity<?> deleteFlowById(UUID id) {
+        LOG.info("Deleting flow with ID: {}", id);
 
         flowRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
 

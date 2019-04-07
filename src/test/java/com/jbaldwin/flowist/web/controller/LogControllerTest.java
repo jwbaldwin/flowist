@@ -11,11 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 import com.google.gson.Gson;
-import com.jbaldwin.flowist.domain.Flow;
-import com.jbaldwin.flowist.domain.FlowStatus;
-import com.jbaldwin.flowist.service.FlowService;
+import com.jbaldwin.flowist.domain.Log;
+import com.jbaldwin.flowist.service.LogService;
 import com.jbaldwin.flowist.support.MockGenerator;
-import java.security.Principal;
 import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,78 +33,67 @@ import org.springframework.test.web.servlet.MvcResult;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class FlowControllerTest {
+public class LogControllerTest {
 
     @MockBean
-    private FlowService flowService;
+    private LogService logService;
     private MockMvc mockMvc;
     private Gson gson;
 
     private UUID id = UUID.randomUUID();
+    private UUID flowId = UUID.randomUUID();
     private UUID owner = UUID.randomUUID();
-    private Flow mockFlow = MockGenerator.generateMockFlow(id, owner);
+    private Log mockLog = MockGenerator.generateMockLog(id, flowId, owner);
 
     @Before
+
     public void setup() {
-        mockMvc = standaloneSetup(new FlowController(flowService)).build();
+        mockMvc = standaloneSetup(new LogController(logService)).build();
         gson = new Gson();
     }
 
     @Test
-    public void getAllFlows_willReturnNoFlows_whenNoFlowsExist() throws Exception {
-        mockMvc.perform(get("/flows"))
+    public void getAllLogsByFlowId_willReturnNoLogs_whenNoLogsExist() throws Exception {
+        mockMvc.perform(get("/flows/" + flowId + "/logs"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().json("[]"));
     }
 
     @Test
-    public void getFlowById_willReturnFlowWithCorrectId() throws Exception {
-        Mockito.when(flowService.getFlowById(id)).thenReturn(ResponseEntity.ok(mockFlow));
+    public void saveLog_willSaveLog_andSetInformation() throws Exception {
+        Mockito.when(logService.saveLog(flowId, mockLog)).thenReturn(ResponseEntity.ok(mockLog));
 
-        MvcResult result = mockMvc.perform(get("/flows/" + id)
-            .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertThat(result.getResponse().getContentAsString(), equalTo(gson.toJson(mockFlow)));
-    }
-
-    @Test
-    public void saveFlow_willSaveFlow_andSetInformation() throws Exception {
-        Principal mockPrincipal = Mockito.mock(Principal.class);
-        Mockito.when(mockPrincipal.getName()).thenReturn(owner.toString());
-        Mockito.when(flowService.saveFlow(mockFlow)).thenReturn(ResponseEntity.ok(mockFlow));
-
-        MvcResult result = mockMvc.perform(post("/flows")
-            .principal(mockPrincipal)
+        MvcResult result = mockMvc.perform(post("/flows/" + flowId + "/logs")
             .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-            .content(gson.toJson(mockFlow)))
+            .content(gson.toJson(mockLog)))
             .andExpect(status().isOk())
             .andReturn();
 
-        assertThat(result.getResponse().getContentAsString(), equalTo(gson.toJson(mockFlow)));
+        assertThat(result.getResponse().getContentAsString(), equalTo(gson.toJson(mockLog)));
     }
 
     @Test
-    public void updateFlow_willUpdateFlowById() throws Exception {
-        mockFlow.setFlowStatus(FlowStatus.COMPLETED);
-        Mockito.when(flowService.updateFlow(mockFlow, id)).thenReturn(ResponseEntity.ok(mockFlow));
+    public void updateLog() throws Exception {
+        mockLog.setContent("UPDATED");
+        Mockito.when(logService.updateLog(flowId, id, mockLog)).thenReturn(ResponseEntity.ok(mockLog));
 
-        MvcResult result = mockMvc.perform(put("/flows/" + id)
+        MvcResult result = mockMvc.perform(put("/flows/" + flowId + "/logs/" + id)
             .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-            .content(gson.toJson(mockFlow)))
+            .content(gson.toJson(mockLog)))
             .andExpect(status().isOk())
             .andReturn();
 
-        assertThat(result.getResponse().getContentAsString(), equalTo(gson.toJson(mockFlow)));
+        assertThat(result.getResponse().getContentAsString(), equalTo(gson.toJson(mockLog)));
     }
 
     @Test
-    public void deleteFlow_willDeleteFlowWithId() throws Exception {
-        mockMvc.perform(delete("/flows/" + id)
+    public void deleteLog_willDeleteLogWithFlowId() throws Exception {
+        Mockito.when(logService.deleteLog(flowId, id)).thenReturn(ResponseEntity.ok().build());
+
+        mockMvc.perform(delete("/flows/" + flowId + "/logs/" + id)
             .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isOk());
     }
