@@ -2,41 +2,47 @@ package com.jbaldwin.flowist.web.controller;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 import com.google.gson.Gson;
 import com.jbaldwin.flowist.domain.Log;
 import com.jbaldwin.flowist.service.LogService;
 import com.jbaldwin.flowist.support.MockGenerator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureMockMvc
+//@RunWith(MockitoJUnitRunner.class)
 public class LogControllerTest {
 
-    @MockBean
+    @Mock
     private LogService logService;
+    @InjectMocks
+    private LogController logController;
+
     private MockMvc mockMvc;
     private Gson gson;
 
@@ -46,18 +52,27 @@ public class LogControllerTest {
     private Log mockLog = MockGenerator.generateMockLog(id, flowId, owner);
 
     @Before
-
     public void setup() {
-        mockMvc = standaloneSetup(new LogController(logService)).build();
+        MockitoAnnotations.initMocks(this);
+        mockMvc = MockMvcBuilders
+            .standaloneSetup(logController)
+            .build();
         gson = new Gson();
     }
 
     @Test
     public void getAllLogsByFlowId_willReturnNoLogs_whenNoLogsExist() throws Exception {
+        List<Log> mockList = new ArrayList<>();
+        mockList.add(mockLog);
+        Mockito.when(logService.findByFlowId(flowId)).thenReturn(mockList);
+
         mockMvc.perform(get("/flows/" + flowId + "/logs"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().json("[]"));
+            .andExpect(jsonPath("$", hasSize(1)));
+
+        verify(logService, times(1)).findByFlowId(flowId);
+        verifyNoMoreInteractions(logService);
     }
 
     @Test
@@ -72,6 +87,9 @@ public class LogControllerTest {
             .andReturn();
 
         assertThat(result.getResponse().getContentAsString(), equalTo(gson.toJson(mockLog)));
+        verify(logService, times(1)).findByFlowId(flowId);
+        verify(logService, times(1)).saveLog(flowId, mockLog);
+        verifyNoMoreInteractions(logService);
     }
 
     @Test
