@@ -4,40 +4,87 @@
 #
 version: 2.1
 jobs:
-  build:
+  test-build:
     docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    working_directory: .
-
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
-
+      - image: circleci/openjdk:8-jdk-node
     steps:
-      # git pull
       - checkout
-
-      # Download and cache dependencies
+      - run:
+          name: Generate Cache Checksum
+          command: find . -name 'build.gradle' | sort | xargs cat | shasum | awk '{print
+            $1}' > /tmp/gradle_cache_seed
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run: ./gradlew dependencies
-
+          key: gradle-{{ checksum "/tmp/gradle_cache_seed" }}-{{ checksum ".circleci/config.yml"
+            }}
+      - run:
+          name: Run Tests
+          command: ./gradlew clean test build
       - save_cache:
           paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          key: gradle-{{ checksum "/tmp/gradle_cache_seed" }}-{{ checksum ".circleci/config.yml"
+            }}
+      - store_test_results:
+          path: build/test-results/test/
+      - store_artifacts:
+          path: build/test-results/test/
+          destination: Results
+      - store_artifacts:
+          path: build/reports/tests/test/
+          destination: Reports
+      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: .
+          # Must be relative path from root
+          paths:
+            - Dockerfile
+            - build
+    environment:
+      - TERM: dumb
+  docker-publish:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - setup_remote_docker
+      - run:
+          name: Check Environment Variables
+          command: |
+            if [[ -z "${DOCKER_LOGIN}" ]]; then
+            echo "DOCKER_LOGIN is not set, will not be able to push image."
+            exit 1
+            fi
 
-      # run tests!
-      - run: ./gradlew test
+            if [[ -z "${DOCKER_PASSWORD}" ]]; then
+            echo "DOCKER_PASSWORD is not set, will not be able to push image."
+            exit 1
+            fi
+      - run:
+          name: Docker Login
+          command: docker login -u "${DOCKER_LOGIN}" -p "${DOCKER_PASSWORD}" docker.io
+      - run:
+          name: Build Docker Image
+          command: |
+            docker build \
+               \
+              -f Dockerfile -t \
+              docker.io/$DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1 \
+              .
+      - run:
+          name: Push Docker Image
+          command: |
+            if [[ $CIRCLE_NODE_INDEX == 0 ]]; then
+              docker push docker.io/$DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME
+            fi
+workflows:
+  build-test-deploy:
+    jobs:
+      - test-build
+      - docker-publish:
+          requires:
+            - test-build
