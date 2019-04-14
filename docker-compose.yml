@@ -1,42 +1,31 @@
-version: '3.3'
+version: '3'
 
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    networks:
-      - nginx-proxy
   api:
     image: jwbaldwin/flowist
     container_name: api
-    expose:
-      - 8080
-    environment:
-      - VIRTUAL_HOST=flowist.io
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
     networks:
-      - nginx-proxy
+      - main
     deploy:
       restart_policy:
         condition: on_failure
         delay: 10s
         max_attempts: 3
-  frontend:
+  backend:
     image: jwbaldwin/flowist-frontend
     container_name: frontend
-    expose:
-      - 3000
-    environment:
-      - VIRTUAL_HOST=flowist.io
+    ports:
+      - "3000:3000"
     networks:
-      - nginx-proxy
+      - main
     deploy:
       restart_policy:
         condition: on_failure
         delay: 10s
         max_attempts: 3
 networks:
-  nginx-proxy:
+  main:

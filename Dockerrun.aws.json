@@ -5,11 +5,11 @@
       "image": "jwbaldwin/flowist:latest",
       "name": "api",
       "essential": true,
-      "memory": 100,
+      "memory": 512,
       "portMappings": [
         {
-          "containerPort": 5000,
-          "hostPort": 5000
+          "containerPort": 8080,
+          "hostPort": 8080
         }
       ],
       "environment": [
@@ -23,7 +23,7 @@
       "image": "jwbaldwin/flowist-frontend:latest",
       "name": "frontend",
       "essential": true,
-      "memory": 100,
+      "memory": 128,
       "portMappings": [
         {
           "containerPort": 3000,
