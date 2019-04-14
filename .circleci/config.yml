@@ -9,6 +9,5 @@ workflows:
   test-with-custom-reports:
     jobs:
       - gradle/test:
-          executor: ./gradlew
           test_results_path: build/test-results/test/
           store_artifacts: build/test-results/test/
