@@ -5,6 +5,7 @@
 version: 2.1
 orbs:
   gradle: circleci/gradle@1.0.11
+  docker-publish: circleci/docker-publish@0.1.6
 workflows:
   test-with-custom-reports:
     jobs:
@@ -12,3 +13,6 @@ workflows:
           test_command: test
           test_results_path: build/test-results/test/*.xml
           reports_path: ~/reports
+  build_and_publish_docker_image:
+    jobs:
+      - docker-publish/publish
