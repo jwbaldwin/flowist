@@ -10,11 +10,9 @@ workflows:
   build-test-deploy:
     jobs:
       - gradle/test:
-          test_command: test
-          test_results_path: build/test-results/test/*.xml
-          reports_path: ~/reports
-      - run:
-          command: ll -a
+          test_command: clean test build
+          test_results_path: build/test-results/test/
+          reports_path: build/reports/tests/test/
       - docker-publish/publish:
           requires:
             - gradle/test
