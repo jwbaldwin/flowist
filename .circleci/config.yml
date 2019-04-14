@@ -11,5 +11,4 @@ workflows:
       - gradle/test:
           test_command: test
           test_results_path: build/test-results/test/*.xml
-          store_artifacts: build/libs/
           reports_path: ~/reports
