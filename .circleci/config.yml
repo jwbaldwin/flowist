@@ -6,6 +6,9 @@ version: 2.1
 orbs:
   gradle: circleci/gradle@1.0.11
 workflows:
-  checkout-build-test:
+  test-with-custom-reports:
     jobs:
-      - gradle/test
+      - gradle/test:
+          test_command: test
+          test_results_path: build/my-results/
+          store_artifacts: build/my-reports/
