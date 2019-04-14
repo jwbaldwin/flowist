@@ -40,7 +40,7 @@ jobs:
           root: .
           # Must be relative path from root
           paths:
-            - /
+            - .*
     environment:
       - TERM: dumb
   docker-publish:
