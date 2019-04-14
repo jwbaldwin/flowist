@@ -86,4 +86,4 @@ workflows:
       - test-build
       - docker-build-publish:
           requires:
-            - gradle/test
+            - test-build
