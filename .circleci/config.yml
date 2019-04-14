@@ -3,9 +3,43 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2.1
+jobs:
+  docker-build-publish:
+    docker:
+      - image: circleci/python:3.6
+      steps:
+        - setup_remote_docker
+        - run:
+            name: Check Environment Variables
+            command: |
+              if [[ -z "${DOCKER_LOGIN}" ]]; then
+                echo "DOCKER_LOGIN is not set, will not be able to push image."
+                exit 1
+              fi
+
+              if [[ -z "${DOCKER_PASSWORD}" ]]; then
+                echo "DOCKER_PASSWORD is not set, will not be able to push image."
+                exit 1
+              fi
+        - run:
+            name: Docker Login
+            command: docker login -u "${DOCKER_LOGIN}" -p "${DOCKER_PASSWORD}" docker.io
+        - run:
+            name: Build Docker Image
+            command: |
+              docker build \
+                 \
+                -f Dockerfile -t \
+                docker.io/$DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1 \
+                .
+        - run:
+            name: Push Docker Image
+            command: |
+              if [[ $CIRCLE_NODE_INDEX == 0 ]]; then
+                docker push docker.io/$DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME
+              fi
 orbs:
   gradle: circleci/gradle@1.0.11
-  docker-publish: circleci/docker-publish@0.1.6
 workflows:
   build-test-deploy:
     jobs:
@@ -13,6 +47,6 @@ workflows:
           test_command: clean test build
           test_results_path: build/test-results/test/
           reports_path: build/reports/tests/test/
-      - docker-publish/publish:
+      - docker-build-publish:
           requires:
             - gradle/test
