@@ -2,10 +2,10 @@
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
     {
-      "image": "jwbaldwin/flowist",
+      "image": "jwbaldwin/flowist:latest",
       "name": "api",
       "essential": true,
-      "memory": 512,
+      "memory": 100,
       "portMappings": [
         {
           "containerPort": 5000,
@@ -20,10 +20,10 @@
       ]
     },
     {
-      "image": "jwbaldwin/flowist-frontend",
+      "image": "jwbaldwin/flowist-frontend:latest",
       "name": "frontend",
       "essential": true,
-      "memory": 512,
+      "memory": 100,
       "portMappings": [
         {
           "containerPort": 3000,
