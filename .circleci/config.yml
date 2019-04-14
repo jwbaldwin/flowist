@@ -4,8 +4,52 @@
 #
 version: 2.1
 jobs:
-  docker-build-publish:
+  test-build:
+    docker:
+      - image: circleci/openjdk:8-jdk-node
     steps:
+      - checkout
+      - run:
+          name: Generate Cache Checksum
+          command: find . -name 'build.gradle' | sort | xargs cat | shasum | awk '{print
+            $1}' > /tmp/gradle_cache_seed
+      - restore_cache:
+          key: gradle-{{ checksum "/tmp/gradle_cache_seed" }}-{{ checksum ".circleci/config.yml"
+            }}
+      - run:
+          name: Run Tests
+          command: ./gradlew clean test build
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          key: gradle-{{ checksum "/tmp/gradle_cache_seed" }}-{{ checksum ".circleci/config.yml"
+            }}
+      - store_test_results:
+          path: build/test-results/test/
+      - store_artifacts:
+          path: build/test-results/test/
+          destination: Results
+      - store_artifacts:
+          path: build/reports/tests/test/
+          destination: Reports
+      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: .
+          # Must be relative path from root
+          paths:
+            - build/libs/
+    environment:
+      - TERM: dumb
+  docker-publish:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
       - setup_remote_docker
       - run:
           name: Check Environment Variables
@@ -36,15 +80,10 @@ jobs:
             if [[ $CIRCLE_NODE_INDEX == 0 ]]; then
               docker push docker.io/$DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME
             fi
-orbs:
-  gradle: circleci/gradle@1.0.11
 workflows:
   build-test-deploy:
     jobs:
-      - gradle/test:
-          test_command: clean test build
-          test_results_path: build/test-results/test/
-          reports_path: build/reports/tests/test/
+      - test-build
       - docker-build-publish:
           requires:
             - gradle/test
