@@ -39,5 +39,36 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      # run tests!
-      - run: ./gradlew test
+    # run tests!
+    - run: ./gradlew test
+      if [[ -z "${DOCKER_PASSWORD}" ]]; then
+      echo "DOCKER_PASSWORD is not set, will not be able to push image."
+      exit 1
+      fi
+    - run:
+        name: Docker Login
+        command: docker login -u "${DOCKER_LOGIN}" -p "${DOCKER_PASSWORD}" docker.io
+    - run:
+        name: Build Docker Image
+        command: |
+          docker build \
+             \
+            -f Dockerfile -t \
+            docker.io/$DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1 \
+            .
+    - run:
+        name: Push Docker Image
+        command: |
+          if [[ $CIRCLE_NODE_INDEX == 0 ]]; then
+            docker push docker.io/$DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME
+          fi
+workflows:
+  build-test-deploy:
+    jobs:
+      - test-build
+      - docker-publish:
+          requires:
+            - test-build
+          filters:
+            branches:
+              only: master
