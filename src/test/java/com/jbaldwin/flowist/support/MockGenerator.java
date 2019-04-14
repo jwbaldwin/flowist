@@ -27,6 +27,7 @@ public class MockGenerator {
             .id(id)
             .content("This is a test log")
             .flow(generateMockFlow(flowId, owner))
+            .type("update")
             .build();
     }
 

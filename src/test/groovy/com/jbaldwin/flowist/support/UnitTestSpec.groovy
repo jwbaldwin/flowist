@@ -1,7 +1,10 @@
-package com.jbaldwin.flowist
+package com.jbaldwin.flowist.support
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [Flowist])
+import com.jbaldwin.flowist.FlowistApplication
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import spock.lang.Specification
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [FlowistApplication])
 @ActiveProfiles(["boot-run", "test"])
-class UnitTestSpec extends Specification {
-
-}
+abstract class UnitTestSpec extends Specification {}

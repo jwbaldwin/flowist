@@ -42,7 +42,7 @@ public class LogController {
         return logService.updateLog(flowId, logId, log);
     }
 
-    @DeleteMapping("/posts/{flowId}/logs/{logId}")
+    @DeleteMapping("/flows/{flowId}/logs/{logId}")
     public ResponseEntity<Object> deleteLog(@PathVariable UUID flowId, @PathVariable UUID logId) {
         LOG.info("Processing log DELETE with id: {}", logId);
         return logService.deleteLog(flowId, logId);

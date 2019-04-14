@@ -1,6 +1,7 @@
 package com.jbaldwin.flowist.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.annotations.Expose;
 import com.jbaldwin.flowist.model.AuditModel;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -28,13 +29,17 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "logs")
 public class Log extends AuditModel {
 
+    @Expose
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
+    @Expose
     @Lob
     private String content;
+
+    @Expose
     private String type;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
