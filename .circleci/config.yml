@@ -15,7 +15,6 @@ workflows:
           reports_path: ~/reports
       - gradle/run:
           command: build
-        reports_path: ~/reports
       - docker-publish/publish:
           requires:
             - gradle/test
