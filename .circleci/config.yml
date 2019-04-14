@@ -40,7 +40,8 @@ jobs:
           root: .
           # Must be relative path from root
           paths:
-            - .*
+            - Dockerfile
+            - build
     environment:
       - TERM: dumb
   docker-publish:
