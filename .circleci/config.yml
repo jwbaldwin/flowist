@@ -94,7 +94,6 @@ jobs:
                \
               -f Dockerfile -t \
               docker.io/$DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1 \
-              docker.io/$DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:latest \
               .
       - run:
           name: Push Docker Image
