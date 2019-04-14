@@ -6,7 +6,7 @@ version: 2.1
 orbs:
   gradle: circleci/gradle@1.0.0
 workflows:
-  checkout-build-test:
+  test-with-custom-reports:
     jobs:
       - with_cache
       - gradle/test
