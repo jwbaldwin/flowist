@@ -62,3 +62,14 @@ distributions {
         }
     }
 }
+
+task prepareDeployArtifact(type: Zip) {
+    dependsOn build
+
+    from(".") {
+        include 'nginx/*'
+        include 'Dockerrun.aws.json'
+    }
+
+    archiveName 'flowist-deploy.zip'
+}
