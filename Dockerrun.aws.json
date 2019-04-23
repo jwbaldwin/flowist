@@ -2,14 +2,40 @@
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
     {
-      "image": "jwbaldwin/flowist:latest",
+      "name": "nginx-proxy",
+      "image": "nginx",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        },
+        {
+          "hostPort": 443,
+          "containerPort": 443
+        }
+      ],
+      "links": [
+        "api",
+        "frontend"
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "nginx-proxy-conf",
+          "containerPath": "/etc/nginx",
+          "readOnly": true
+        }
+      ]
+    },
+    {
       "name": "api",
+      "image": "jwbaldwin/flowist:latest",
       "essential": true,
       "memory": 512,
       "portMappings": [
         {
-          "containerPort": 8080,
-          "hostPort": 8080
+          "containerPort": 8080
         }
       ],
       "environment": [
@@ -20,18 +46,23 @@
       ]
     },
     {
-      "image": "jwbaldwin/flowist-frontend:latest",
       "name": "frontend",
+      "image": "jwbaldwin/flowist-frontend:latest",
       "essential": true,
       "memory": 128,
       "portMappings": [
         {
-          "containerPort": 3000,
-          "hostPort": 3000
+          "containerPort": 3000
         }
       ]
     }
   ],
-  "family": "",
-  "volumes": []
+  "volumes": [
+    {
+      "name": "nginx-proxy-conf",
+      "host": {
+        "sourcePath": "/var/app/current/nginx"
+      }
+    }
+  ]
 }
