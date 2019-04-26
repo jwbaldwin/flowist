@@ -15,9 +15,11 @@ import org.springframework.stereotype.Service;
 public class FlowService {
 
     private final FlowRepository flowRepository;
+    private final TagExtractionService tagExtractionService;
 
-    public FlowService(FlowRepository flowRepository) {
+    public FlowService(FlowRepository flowRepository, TagExtractionService tagExtractionService) {
         this.flowRepository = flowRepository;
+        this.tagExtractionService = tagExtractionService;
     }
 
     public List<Flow> getAllFlows() {
@@ -34,6 +36,7 @@ public class FlowService {
 
     public ResponseEntity<Flow> saveFlow(Flow flow) {
         flow.setFlowStatus(FlowStatus.ACTIVE);
+        flow.setTags(tagExtractionService.extractTags(flow));
 
         LOG.info("Saving new flow: {}", flow);
         return ResponseEntity.ok(flowRepository.save(flow));
