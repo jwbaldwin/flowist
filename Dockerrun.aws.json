@@ -2,6 +2,26 @@
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
     {
+      "name": "watchtower",
+      "image": "v2tec/watchtower",
+      "command": [
+        "--interval",
+        "30"
+      ],
+      "essential": true,
+      "memory": 128,
+      "links": [
+        "api",
+        "frontend"
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "watchtower-sock",
+          "containerPath": "/var/run/docker.sock"
+        }
+      ]
+    },
+    {
       "name": "nginx-proxy",
       "image": "nginx",
       "essential": true,
@@ -62,6 +82,12 @@
       "name": "nginx-proxy-conf",
       "host": {
         "sourcePath": "/var/app/current/nginx"
+      }
+    },
+    {
+      "name": "watchtower-sock",
+      "host": {
+        "sourcePath": "/var/run/docker.sock"
       }
     }
   ]
