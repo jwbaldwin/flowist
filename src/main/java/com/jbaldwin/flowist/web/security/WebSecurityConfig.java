@@ -4,6 +4,7 @@ import com.jbaldwin.flowist.web.jwt.JwtAuthenticationEntryPoint;
 import com.jbaldwin.flowist.web.jwt.JwtAuthenticationProvider;
 import com.jbaldwin.flowist.web.jwt.JwtAuthenticationSuccessHandler;
 import com.jbaldwin.flowist.web.jwt.JwtAuthenticationTokenFilter;
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -50,17 +49,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
-                // All urls must be authenticated (filter for token always fires (/**)
-                .authorizeRequests().anyRequest().authenticated()
-                .and()
-                // Call our errorHandler if authentication/authorisation fails
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-                .and()
-                // don't create session
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //.and()
+            // All urls must be authenticated (filter for token always fires (/**)
+            .authorizeRequests().anyRequest().authenticated()
+            .and()
+            // Call our errorHandler if authentication/authorisation fails
+            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+            .and()
+            // don't create session
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //.and()
         // Custom JWT based security filter
         httpSecurity
-                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 
         // disable page caching
         httpSecurity.headers().cacheControl();

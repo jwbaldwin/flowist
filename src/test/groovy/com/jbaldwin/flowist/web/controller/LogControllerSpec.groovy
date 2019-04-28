@@ -26,6 +26,7 @@ class LogControllerSpec extends Specification {
     private UUID flowId = UUID.randomUUID()
     private UUID owner = UUID.randomUUID()
     private Log mockLog = MockGenerator.generateMockLog(id, flowId, owner)
+    private Log mockReturnLog = MockGenerator.generateMockReturnLog(id, flowId, owner)
 
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(new LogController(logService)).build()
@@ -35,7 +36,8 @@ class LogControllerSpec extends Specification {
     def 'GET ALL logs by flow id will return no logs when none exist'() {
         given: 'a mocked set of logs'
         List<Log> mockList = new ArrayList<>()
-        mockList.add(mockLog)
+
+        mockList.add(mockReturnLog)
         logService.findByFlowId(flowId) >> mockList
 
         when: 'a get request is made with flow id for logs'
@@ -44,13 +46,17 @@ class LogControllerSpec extends Specification {
         then: 'the list of logs is returned'
         with(response) {
             status == HttpStatus.OK.value()
-            contentAsString == gson.toJson(mockList)
+            with(gson.toJson(contentAsString)) {
+                contains("id")
+                contains("created")
+                contains("updated")
+            }
         }
     }
 
     def 'POST new log will save log with all information'() {
         given: 'a mocked log'
-        logService.saveLog(_, _ as Log) >> ResponseEntity.ok(mockLog)
+        logService.saveLog(_, _ as Log) >> ResponseEntity.ok(mockReturnLog)
 
         when: 'a new log is posted'
         def response = mockMvc.perform(post("/flows/" + flowId + "/logs")
@@ -62,14 +68,18 @@ class LogControllerSpec extends Specification {
         then: 'the mocked flow is saved'
         with(response) {
             status == HttpStatus.OK.value()
-            contentAsString == gson.toJson(mockLog)
+            with(gson.toJson(contentAsString)) {
+                contains("id")
+                contains("created")
+                contains("updated")
+            }
         }
     }
 
     def 'PUT an updated log will update the log with the new information'() {
         given: 'an updated log with new information'
         mockLog.setContent("UPDATED")
-        logService.updateLog(flowId, id, _) >> ResponseEntity.ok(mockLog)
+        logService.updateLog(flowId, id, _) >> ResponseEntity.ok(mockReturnLog)
 
         when: 'the updated log is put'
         def response = mockMvc.perform(put("/flows/" + flowId + "/logs/" + id)
@@ -81,7 +91,11 @@ class LogControllerSpec extends Specification {
         then: 'the mocked flow is saved'
         with(response) {
             status == HttpStatus.OK.value()
-            contentAsString == gson.toJson(mockLog)
+            with(gson.toJson(contentAsString)) {
+                contains("id")
+                contains("created")
+                contains("updated")
+            }
         }
     }
 

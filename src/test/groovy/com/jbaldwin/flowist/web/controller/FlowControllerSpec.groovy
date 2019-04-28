@@ -27,6 +27,7 @@ class FlowControllerSpec extends Specification {
     private UUID id = UUID.randomUUID()
     private UUID owner = UUID.randomUUID()
     private Flow mockFlow = MockGenerator.generateMockFlow(id, owner)
+    private Flow mockReturnFlow = MockGenerator.generateMockReturnFlow(id, owner)
 
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(new FlowController(flowService)).build()
@@ -44,7 +45,7 @@ class FlowControllerSpec extends Specification {
 
     def 'GET flow by id will return flow with correct id'() {
         given: 'a mocked return flow'
-        flowService.getFlowById(id) >> ResponseEntity.ok(mockFlow)
+        flowService.getFlowById(id) >> ResponseEntity.ok(mockReturnFlow)
 
         when: 'a get request is made for a flow by id'
         def response = mockMvc.perform(get("/flows/" + id)
@@ -54,7 +55,12 @@ class FlowControllerSpec extends Specification {
         then: 'the mocked flow is returned'
         with(response) {
             status == HttpStatus.OK.value()
-            contentAsString == gson.toJson(mockFlow)
+            with(gson.toJson(contentAsString)) {
+                contains("id")
+                contains("owner")
+                contains("created")
+                contains("updated")
+            }
         }
     }
 
@@ -62,7 +68,7 @@ class FlowControllerSpec extends Specification {
         given: 'a mocked flow and principal'
         Principal mockPrincipal = Mock(Principal.class)
         mockPrincipal.getName() >> owner.toString()
-        flowService.saveFlow(mockFlow) >> ResponseEntity.ok(mockFlow)
+        flowService.saveFlow(mockFlow) >> ResponseEntity.ok(mockReturnFlow)
 
         when: 'the new flow is posted'
         def response = mockMvc.perform(post("/flows")
@@ -75,14 +81,19 @@ class FlowControllerSpec extends Specification {
         then: 'the mocked flow is saved'
         with(response) {
             status == HttpStatus.OK.value()
-            contentAsString == gson.toJson(mockFlow)
+            with(gson.toJson(contentAsString)) {
+                contains("id")
+                contains("owner")
+                contains("created")
+                contains("updated")
+            }
         }
     }
 
     def 'PUT an updated flow will update the flow with new information'() {
         given: 'an updated flow with new information'
         mockFlow.setFlowStatus(FlowStatus.COMPLETED)
-        flowService.updateFlow(mockFlow, id) >> ResponseEntity.ok(mockFlow)
+        flowService.updateFlow(mockFlow, id) >> ResponseEntity.ok(mockReturnFlow)
 
         when: 'the mock flow is posted'
         def response = mockMvc.perform(put("/flows/" + id)
@@ -94,7 +105,12 @@ class FlowControllerSpec extends Specification {
         then: 'the mocked flow is saved'
         with(response) {
             status == HttpStatus.OK.value()
-            contentAsString == gson.toJson(mockFlow)
+            with(gson.toJson(contentAsString)) {
+                contains("id")
+                contains("owner")
+                contains("created")
+                contains("updated")
+            }
         }
     }
 

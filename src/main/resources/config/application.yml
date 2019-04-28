@@ -3,6 +3,7 @@ server:
   servlet:
     context-path: /api
 
+
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -15,3 +16,6 @@ cognito:
   userPoolId: us-east-1_ovXfMEfAs
   url: https://cognito-idp.${cognito.region}.amazonaws.com/${cognito.userPoolId}/.well-known/jwks.json
 
+management:
+  security:
+    enabled: false

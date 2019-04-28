@@ -5,6 +5,7 @@ import com.jbaldwin.flowist.domain.FlowStatus;
 import com.jbaldwin.flowist.domain.Log;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.UUID;
 
 public class MockGenerator {
@@ -22,6 +23,15 @@ public class MockGenerator {
             .build();
     }
 
+    public static Flow generateMockReturnFlow(UUID id, UUID owner) {
+        Flow flow = generateMockFlow(id, owner);
+
+        flow.setCreated(new Date());
+        flow.setUpdated(new Date());
+
+        return flow;
+    }
+
     public static Log generateMockLog(UUID id, UUID flowId, UUID owner) {
         return Log.builder()
             .id(id)
@@ -29,6 +39,15 @@ public class MockGenerator {
             .flow(generateMockFlow(flowId, owner))
             .type("update")
             .build();
+    }
+
+    public static Log generateMockReturnLog(UUID id, UUID flowId, UUID owner) {
+        Log log = generateMockLog(id, flowId, owner);
+
+        log.setCreated(new Date());
+        log.setUpdated(new Date());
+
+        return log;
     }
 
 }
